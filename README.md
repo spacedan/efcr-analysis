@@ -38,10 +38,11 @@ Potential extensions:
 
 
 
-Security:
-Add Provider to authenticate to AWS from github pipeline with OIDC:
-  - https://registry.terraform.io/modules/terraform-aws-modules/iam/aws/latest/examples/iam-github-oidc  
-  - https://docs.aws.amazon.com/IAM/latest/UserGuide/id_roles_create_for-idp_oidc.html#idp_oidc_Create_GitHub  
+Security:  
+~~Add Provider to authenticate to AWS from github pipeline with OIDC:~~  
+- ~~https://registry.terraform.io/modules/terraform-aws-modules/iam/aws/latest/examples/iam-github-oidc~~  
+- ~~https://docs.aws.amazon.com/IAM/latest/UserGuide/id_roles_create_for-idp_oidc.html#idp_oidc_Create_GitHub~~  
+  
 Additional Dependency scanning / hygine added to pipeline:
   - trivy: https://github.com/aquasecurity/trivy  
   - Bandit: https://github.com/PyCQA/bandit  
