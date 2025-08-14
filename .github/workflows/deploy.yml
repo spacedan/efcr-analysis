@@ -23,8 +23,17 @@ jobs:
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v4
         with:
-          role-to-assume: arn:aws:iam::YOUR_ACCOUNT_ID:role/GitHubActionsECFRRole
+          role-to-assume: arn:aws:iam::${{ secrets.AWS_ACCOUNT_ID }}:role/GitHubActionsECFRRole
           aws-region: ${{ env.AWS_REGION }}
+        
+      - name: Check AWS credentials
+        run: |
+          aws sts get-caller-identity
+
+      - name: Check if lambda exists
+        run: |
+          aws lambda list-functions --function-version ALL --query 'Functions[?starts_with(FunctionName, `danny-ecfr-`)]'
+        continue-on-error: true
             
       - name: Package Lambdas
         run: |
