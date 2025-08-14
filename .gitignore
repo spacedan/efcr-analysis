@@ -1,0 +1,68 @@
+# Terraform
+*.tfstate
+*.tfstate.*
+*.tfvars
+.terraform/
+.terraform.lock.hcl
+terraform.tfplan
+terraform.tfstate.backup
+
+# AWS
+.aws/
+aws-credentials.csv
+*accessKeys.csv
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+venv/
+my_venv/
+env/
+ENV/
+.venv/
+
+# Python packages (installed via pip install -t .)
+*dist-info/
+boto3/
+botocore/
+requests/
+urllib3/
+certifi/
+charset_normalizer/
+idna/
+six.py
+s3transfer/
+jmespath/
+dateutil/
+python_dateutil*/
+bin/
+
+# Lambda packages
+artifacts/
+*.zip
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+
+# Environment variables
+.env
+.env.local
+.env.*.local
+
+# Secrets
+secrets.txt
+*.pem
+*.key

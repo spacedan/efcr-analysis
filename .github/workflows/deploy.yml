@@ -1,0 +1,76 @@
+name: Deploy eCFR Infrastructure
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+env:
+  AWS_REGION: us-east-1
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.12'
+      
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ env.AWS_REGION }}
+      
+      - name: Package Lambdas
+        run: |
+          mkdir -p artifacts
+          
+          # Package API Lambda (simple version)
+          cd lambdas/api_lambda
+          zip -r ../../artifacts/api_lambda.zip simple_app.py
+          cd ../..
+          
+          # Package Ingest Lambda (with dependencies)
+          cd lambdas/ingest_lambda
+          # Clean up any existing packages first
+          rm -rf *dist-info boto3 botocore requests urllib3 certifi charset_normalizer idna six.py s3transfer jmespath dateutil python_dateutil* bin
+          # Install fresh dependencies
+          pip install -r requirements.txt -t .
+          # Create package excluding cache files
+          zip -r ../../artifacts/ingest_lambda.zip . -x "*.pyc" "*/__pycache__/*"
+          cd ../..
+      
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v2
+        with:
+          terraform_version: 1.5.0
+      
+      - name: Terraform Init
+        run: |
+          cd infra
+          terraform init
+      
+      - name: Terraform Plan
+        run: |
+          cd infra
+          terraform plan -var="api_auth_token=${{ secrets.API_AUTH_TOKEN }}"
+      
+      - name: Terraform Apply
+        run: |
+          cd infra
+          terraform apply -auto-approve -var="api_auth_token=${{ secrets.API_AUTH_TOKEN }}"
+      
+      - name: Display Outputs
+        run: |
+          cd infra
+          echo "🚀 Deployment Complete!"
+          echo "API Endpoint: $(terraform output -raw api_base_url)"
+          echo "API Lambda: $(terraform output -raw api_lambda_name)"
+          echo "Ingest Lambda: $(terraform output -raw ingest_lambda_name)"
+          echo "DynamoDB Table: $(terraform output -raw dynamodb_table)"
