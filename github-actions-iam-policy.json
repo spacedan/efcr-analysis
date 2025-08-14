@@ -97,8 +97,8 @@
         "s3:ListBucket"
       ],
       "Resource": [
-        "arn:aws:s3:::your-terraform-state-bucket",
-        "arn:aws:s3:::your-terraform-state-bucket/*"
+        "arn:aws:s3:::tf-state-bucket-danny-ecfr",
+        "arn:aws:s3:::tf-state-bucket-danny-ecfr/*"
       ],
       "Condition": {
         "StringEquals": {
